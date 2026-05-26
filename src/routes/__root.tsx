@@ -18,6 +18,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     head: () => ({
       meta: [
         { charSet: "utf-8" },
+        { name: "apple-mobile-web-app-capable", content: "yes" }, // สั่งให้รันแบบไม่มีแถบ URL
+        { name: "apple-mobile-web-app-title", content: "MedLook" }, // ชื่อแอปตอนไปอยู่บนหน้าจอโฮม
+        { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
         {
           name: "viewport",
           content: "width=device-width, initial-scale=1, viewport-fit=cover",
@@ -42,6 +45,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       links: [
         { rel: "stylesheet", href: appCss },
         { rel: "icon", type: "image/x-icon", href: "/pills.png" } // <--- บรรทัดที่เพิ่มเข้าใหม่
+        { rel: "apple-touch-icon", href: "/pills.png" }
       ],
     }),
     shellComponent: RootShell,
