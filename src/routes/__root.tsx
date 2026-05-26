@@ -44,7 +44,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
       links: [
         { rel: "stylesheet", href: appCss },
-        { rel: "icon", type: "image/x-icon", href: "/pillsnobg.png" } // <--- บรรทัดที่เพิ่มเข้าใหม่
+        { rel: "icon", type: "image/x-icon", href: "/pillsnobg.png" }, // <--- บรรทัดที่เพิ่มเข้าใหม่
         { rel: "apple-touch-icon", href: "/pillsnobg.png" }
       ],
     }),
