@@ -62,13 +62,13 @@ export async function filterMedicines(
     .select("*, images:medicine_images(*)")
     .order("name");
 
-  // Sanitize colors: must be a non-empty array of non-empty strings
-  const colors = Array.isArray(filter.colors)
+  // Safe single-color text match (bypasses PostgreSQL array type checking)
+  const colorList = Array.isArray(filter.colors)
     ? filter.colors.filter((c): c is string => typeof c === "string" && c.trim().length > 0)
     : [];
-  if (colors.length > 0) {
-    // text[] column — use overlaps so any selected color matches
-    req = req.overlaps("colors", colors);
+  const selectedColor = colorList[0]?.trim();
+  if (typeof selectedColor === "string" && selectedColor.length > 0) {
+    req = req.ilike("colors", `%${selectedColor}%`);
   }
   if (filter.shape && filter.shape.trim()) req = req.eq("shape", filter.shape.trim());
   if (filter.scoring) req = req.eq("scoring", filter.scoring);
