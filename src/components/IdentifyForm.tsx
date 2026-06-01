@@ -10,13 +10,13 @@ interface Props {
 }
 
 export function IdentifyForm({ onSubmit, loading }: Props) {
-  const [color, setColor] = useState<string>("");
+  const [colors, setColors] = useState<string[]>([]);
   const [shape, setShape] = useState("");
   const [scoring, setScoring] = useState<Scoring | "">("");
   const [labels, setLabels] = useState("");
 
   const reset = () => {
-    setColor("");
+    setColors([]);
     setShape("");
     setScoring("");
     setLabels("");
@@ -26,7 +26,7 @@ export function IdentifyForm({ onSubmit, loading }: Props) {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit({
-      colors: color ? [color] : undefined,
+      colors: colors.length ? colors : undefined,
       shape: shape || undefined,
       scoring: (scoring as Scoring) || undefined,
       labels: labels || undefined,
@@ -37,13 +37,9 @@ export function IdentifyForm({ onSubmit, loading }: Props) {
     <form onSubmit={submit} className="space-y-4">
       <div>
         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Color {color && `· ${color}`}
+          Color {colors.length > 0 && `· ${colors.length}/2 selected`}
         </p>
-        <ColorSwatchPicker
-          value={color ? [color] : []}
-          onChange={(next) => setColor(next[next.length - 1] ?? "")}
-          max={1}
-        />
+        <ColorSwatchPicker value={colors} onChange={setColors} max={2} />
       </div>
 
       <Pills label="Shape" options={SHAPES} value={shape} onChange={setShape} />
