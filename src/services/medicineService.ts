@@ -62,13 +62,16 @@ export async function filterMedicines(
     .select("*, images:medicine_images(*)")
     .order("name");
 
-  // Safe single-color text match (bypasses PostgreSQL array type checking)
+  // Safe multi-color text match (up to 2). Avoids PG array operators entirely.
   const colorList = Array.isArray(filter.colors)
-    ? filter.colors.filter((c): c is string => typeof c === "string" && c.trim().length > 0)
+     ? filter.colors
+        .filter((c): c is string => typeof c === "string" && c.trim().length > 0)
+        .map((c) => c.trim())
+        .slice(0, 2)
     : [];
-  const selectedColor = colorList[0]?.trim();
-  if (typeof selectedColor === "string" && selectedColor.length > 0) {
-    req = req.ilike("colors", `%${selectedColor}%`);
+  // Each selected color must appear in the stored value (AND across selections).
+  for (const c of colorList) {
+    req = req.ilike("colors", `%${c}%`);
   }
   if (filter.shape && filter.shape.trim()) req = req.eq("shape", filter.shape.trim());
   if (filter.scoring) req = req.eq("scoring", filter.scoring);
